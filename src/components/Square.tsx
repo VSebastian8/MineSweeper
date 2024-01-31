@@ -1,13 +1,14 @@
 import "./Square.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   size: number;
   bombs: number;
   clickSquare: () => void;
+  refresh?: boolean;
 }
 
-export default function Square({ size, bombs, clickSquare }: Props) {
+export default function Square({ size, bombs, clickSquare, refresh }: Props) {
   const [hidden, setHidden] = useState(true);
   const isBomb = bombs == -1;
   const colors = [
@@ -20,6 +21,11 @@ export default function Square({ size, bombs, clickSquare }: Props) {
     "#f59e0b",
     "#fb7185",
   ];
+
+  useEffect(() => {
+    setHidden(true);
+  }, [refresh]);
+
   return (
     <div
       className={"square" + (hidden ? "" : " revealed")}

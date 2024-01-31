@@ -6,6 +6,8 @@ interface Props {
   rows?: number;
   squareSize?: number;
   bombNumber?: number;
+  refresh?: boolean;
+  retry?: boolean;
 }
 
 export default function Board({
@@ -13,6 +15,8 @@ export default function Board({
   rows = 5,
   squareSize = 50,
   bombNumber = 12,
+  refresh = true,
+  retry = true,
 }: Props) {
   const [board, setBoard] = useState<number[][]>([]);
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
@@ -79,6 +83,7 @@ export default function Board({
             key={(i * columns + j).toString()}
             bombs={board[i][j]}
             clickSquare={revealSquare}
+            refresh={refresh != retry}
           />
         );
 
@@ -87,11 +92,11 @@ export default function Board({
 
   useEffect(() => {
     generateBoard();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     if (board.length > 0) generateTiles();
-  }, [board]);
+  }, [board, retry]);
 
   return (
     <div
