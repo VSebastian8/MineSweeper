@@ -9,16 +9,26 @@ interface Props {
 
 export default function Square({ size, bombs, clickSquare }: Props) {
   const [hidden, setHidden] = useState(true);
+  const colors = [
+    "#6366f1",
+    "#38bdf8",
+    "#2dd4bf",
+    "#34d399",
+    "#a3e635",
+    "#facc15",
+    "#f59e0b",
+    "#fb7185",
+  ];
   return (
     <div
-      className="square"
+      className={"square" + (hidden ? "" : " revealed")}
       onClick={() => {
         setHidden(false);
         clickSquare();
       }}
-      style={{ width: size + "px" }}
+      style={{ width: size + "px", color: colors[(bombs + 7) % 8] }}
     >
-      {hidden ? "" : bombs}
+      {hidden || bombs == 0 ? "" : bombs}
     </div>
   );
 }
