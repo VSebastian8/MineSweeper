@@ -1,0 +1,26 @@
+.square {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+
+  background-color: #a1a1aa;
+  border: #71717a solid 5px;
+  border-top-color: #f4f4f5;
+  border-left-color: #f4f4f5;
+
+  cursor: pointer;
+  aspect-ratio: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: all 0.2s;
+}
+
+.square:hover {
+  background-color: #71717a;
+  border: #52525b solid 5px;
+  border-top-color: #a1a1aa;
+  border-left-color: #a1a1aa;
+}
