@@ -22,10 +22,15 @@ export default function Board({
           <Square
             size={squareSize}
             key={(i * columns + j).toString()}
-            bombs={i + j}
+            bombs={(i + j) % 9}
+            clickSquare={revealSquare}
           />
         );
     return board;
+  };
+
+  const revealSquare = () => {
+    console.log("ok");
   };
 
   useEffect(() => {
