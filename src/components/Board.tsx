@@ -21,6 +21,25 @@ export default function Board({
     console.log("ok");
   };
 
+  const bombNeighbours = (i: number, j: number, randomBoard: number[][]) => {
+    const neighbours = [
+      [i - 1, j - 1],
+      [i - 1, j],
+      [i - 1, j + 1],
+      [i, j - 1],
+      [i, j + 1],
+      [i + 1, j - 1],
+      [i + 1, j],
+      [i + 1, j + 1],
+    ];
+    let score = 0;
+    for (var n of neighbours) {
+      if (n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < columns)
+        if (randomBoard[n[0]][n[1]] == -1) score++;
+    }
+    return score;
+  };
+
   const generateBoard = () => {
     const randomBoard = [];
     const possibleBombs = [];
@@ -28,7 +47,7 @@ export default function Board({
     for (let i = 0; i < rows; i++) {
       const boardRow = [];
       for (let j = 0; j < columns; j++) {
-        boardRow.push(1);
+        boardRow.push(0);
         possibleBombs.push(i * columns + j);
       }
       randomBoard.push(boardRow);
@@ -40,6 +59,11 @@ export default function Board({
     for (const bomb of actualBombs) {
       randomBoard[Math.floor(bomb / columns)][bomb % columns] = -1;
     }
+
+    for (let i = 0; i < rows; i++)
+      for (let j = 0; j < columns; j++)
+        if (randomBoard[i][j] != -1)
+          randomBoard[i][j] = bombNeighbours(i, j, randomBoard);
 
     setBoard(randomBoard);
   };

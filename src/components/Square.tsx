@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function Square({ size, bombs, clickSquare }: Props) {
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(true);
   const isBomb = bombs == -1;
   const colors = [
     "#6366f1",
