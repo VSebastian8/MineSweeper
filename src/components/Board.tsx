@@ -1,9 +1,10 @@
 import Square from "./Square";
 import { useState, useEffect } from "react";
 import "./Board.css";
-import click_reveal from "../assets/click_reveal.wav";
-import click_expand from "../assets/click_expand.wav";
-import click_bomb from "../assets/click_bomb.mp3";
+import click_reveal from "../assets/reveal.mp3";
+import click_expand from "../assets/expand.mp3";
+import click_bomb from "../assets/bomb.mp3";
+import game_won from "../assets/game_won.mp3";
 
 interface Props {
   columns?: number;
@@ -14,6 +15,10 @@ interface Props {
   retry?: boolean;
   update: (r: number) => void;
 }
+const revealSound = new Audio(click_reveal);
+const expandSound = new Audio(click_expand);
+const winSound = new Audio(game_won);
+const bombSound = new Audio(click_bomb);
 
 export default function Board({
   columns = 5,
@@ -30,10 +35,6 @@ export default function Board({
   const [gameOver, setGameOver] = useState(false);
   const [revealed, setRevealed] = useState(0);
   const revealGoal = columns * rows - bombNumber;
-
-  const revealSound = new Audio(click_reveal);
-  const expandSound = new Audio(click_expand);
-  const bombSound = new Audio(click_bomb);
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
     const neighbours = [
@@ -180,6 +181,7 @@ export default function Board({
 
   useEffect(() => {
     update(revealed);
+    if (revealed == revealGoal) winSound.play();
   }, [revealed]);
 
   return (

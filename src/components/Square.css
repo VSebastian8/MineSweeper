@@ -28,6 +28,7 @@
 .revealed {
   background-color: #737373;
   border: #52525b solid 3px !important;
+  pointer-events: none;
 }
 
 .locked {

@@ -1,5 +1,10 @@
 import "./Square.css";
+import click_lock from "../assets/lock.mp3";
+import click_unlock from "../assets/unlock.mp3";
 import { useEffect, useState } from "react";
+
+const lockSound = new Audio(click_lock);
+const unlockSound = new Audio(click_unlock);
 
 interface Props {
   size: number;
@@ -37,6 +42,12 @@ export default function Square({
     setLock(false);
   }, [lockRefresh]);
 
+  const handleLock = () => {
+    if (lock) unlockSound.play();
+    else lockSound.play();
+    setLock(!lock);
+  };
+
   return (
     <div
       className={"square" + (hidden ? (lock ? " locked" : "") : " revealed")}
@@ -47,7 +58,7 @@ export default function Square({
       }}
       onContextMenu={(e) => {
         e.preventDefault();
-        setLock(!lock);
+        handleLock();
       }}
       style={{
         width: size + "px",

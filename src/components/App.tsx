@@ -8,9 +8,9 @@ function App() {
   const [refreshed, setRefreshed] = useState(false);
   const [retried, setRetried] = useState(false);
   const [revealed, setRevealed] = useState(0);
-  const bombs = 10;
-  const rows = 8;
-  const columns = 10;
+  const bombs = 20;
+  const rows = 10;
+  const columns = 15;
 
   const handleRefresh = () => {
     setRefreshed(!refreshed);
