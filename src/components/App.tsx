@@ -1,11 +1,15 @@
 import "./App.css";
 import Board from "./Board";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import { useState } from "react";
 
 function App() {
   const [refreshed, setRefreshed] = useState(false);
   const [retried, setRetried] = useState(false);
+  const [revealed, setRevealed] = useState(0);
+  const bombs = 10;
+  const rows = 8;
+  const columns = 10;
 
   const handleRefresh = () => {
     setRefreshed(!refreshed);
@@ -13,6 +17,10 @@ function App() {
 
   const handleRetry = () => {
     setRetried(!retried);
+  };
+
+  const handleReveal = (newVal: number) => {
+    setRevealed(newVal);
   };
 
   return (
@@ -23,15 +31,20 @@ function App() {
       justifyContent="center"
       spacing={2}
     >
-      <Grid item xs={12}></Grid>
+      <Grid item xs={12}>
+        <Typography variant="h6" component="h6">
+          Revealed: {revealed} / {rows * columns - bombs}
+        </Typography>
+      </Grid>
       <Grid item xs={12}>
         <Board
-          rows={13}
-          columns={15}
-          bombNumber={40}
+          rows={rows}
+          columns={columns}
+          bombNumber={bombs}
           squareSize={30}
           refresh={refreshed}
           retry={retried}
+          update={handleReveal}
         />
       </Grid>
       <Grid item xs={12}>

@@ -34,6 +34,7 @@
   background-color: #14b8a6 !important;
 }
 
-.over > .square {
+.over > .square,
+.won > .square {
   pointer-events: none;
 }

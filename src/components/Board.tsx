@@ -9,6 +9,7 @@ interface Props {
   bombNumber?: number;
   refresh?: boolean;
   retry?: boolean;
+  update: (r: number) => void;
 }
 
 export default function Board({
@@ -18,11 +19,14 @@ export default function Board({
   bombNumber = 12,
   refresh = true,
   retry = true,
+  update,
 }: Props) {
   const [board, setBoard] = useState<number[][]>([]);
   const [boardShow, setBoardShow] = useState<boolean[][]>([]);
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
   const [gameOver, setGameOver] = useState(false);
+  const [revealed, setRevealed] = useState(0);
+  const revealGoal = columns * rows - bombNumber;
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
     const neighbours = [
@@ -39,6 +43,7 @@ export default function Board({
       if (n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < columns) {
         if (!newBoardShow[n[0]][n[1]]) {
           newBoardShow[n[0]][n[1]] = true;
+          setRevealed((rev) => rev + 1);
           if (board[n[0]][n[1]] == 0) expand(n[0], n[1], newBoardShow);
         }
       }
@@ -46,14 +51,20 @@ export default function Board({
   };
 
   const revealSquare = (i: number, j: number) => {
-    if (gameOver) {
-      return;
-    }
-    let newBoardShow = [...boardShow];
-    newBoardShow[i][j] = true;
-    if (board[i][j] == -1) setGameOver(true);
-    if (board[i][j] == 0) expand(i, j, newBoardShow);
+    if (gameOver) return;
 
+    let newBoardShow = [...boardShow];
+    if (!newBoardShow[i][j]) {
+      newBoardShow[i][j] = true;
+      setRevealed((rev) => rev + 1);
+    }
+    if (board[i][j] == -1) {
+      setRevealed((rev) => rev - 1);
+      setGameOver(true);
+    }
+    if (board[i][j] == 0) {
+      expand(i, j, newBoardShow);
+    }
     setBoardShow(newBoardShow);
   };
 
@@ -139,18 +150,24 @@ export default function Board({
 
   useEffect(() => {
     setGameOver(false);
+    setRevealed(0);
     hideTiles();
     generateBoard();
   }, [refresh]);
 
   useEffect(() => {
     setGameOver(false);
+    setRevealed(0);
     hideTiles();
   }, [retry]);
 
   useEffect(() => {
     if (board.length > 0) generateTiles();
   }, [board, boardShow]);
+
+  useEffect(() => {
+    update(revealed);
+  }, [revealed]);
 
   return (
     <div
@@ -161,7 +178,7 @@ export default function Board({
         gridTemplateColumns: `repeat(${columns}, ${squareSize}px)`,
         gridTemplateRows: `repeat(${rows},  ${squareSize}px)`,
       }}
-      className={gameOver ? "over" : ""}
+      className={gameOver ? "over" : revealed == revealGoal ? "won" : ""}
     >
       {tiles}
     </div>
