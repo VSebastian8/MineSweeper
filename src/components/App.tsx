@@ -26,9 +26,10 @@ function App() {
       <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Board
-          rows={7}
-          columns={10}
-          bombNumber={20}
+          rows={13}
+          columns={15}
+          bombNumber={40}
+          squareSize={30}
           refresh={refreshed}
           retry={retried}
         />

@@ -22,9 +22,33 @@ export default function Board({
   const [boardShow, setBoardShow] = useState<boolean[][]>([]);
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
 
+  const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
+    const neighbours = [
+      [i - 1, j - 1],
+      [i - 1, j],
+      [i - 1, j + 1],
+      [i, j - 1],
+      [i, j + 1],
+      [i + 1, j - 1],
+      [i + 1, j],
+      [i + 1, j + 1],
+    ];
+    for (let n of neighbours) {
+      if (n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < columns) {
+        if (!newBoardShow[n[0]][n[1]]) {
+          newBoardShow[n[0]][n[1]] = true;
+          if (board[n[0]][n[1]] == 0) expand(n[0], n[1], newBoardShow);
+        }
+      }
+    }
+  };
+
   const revealSquare = (i: number, j: number) => {
     let newBoardShow = [...boardShow];
     newBoardShow[i][j] = true;
+    if (board[i][j] == -1) console.log("Game Over");
+    if (board[i][j] == 0) expand(i, j, newBoardShow);
+
     setBoardShow(newBoardShow);
   };
 
@@ -40,7 +64,7 @@ export default function Board({
       [i + 1, j + 1],
     ];
     let score = 0;
-    for (var n of neighbours) {
+    for (let n of neighbours) {
       if (n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < columns)
         if (randomBoard[n[0]][n[1]] == -1) score++;
     }
