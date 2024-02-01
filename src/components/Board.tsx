@@ -19,10 +19,13 @@ export default function Board({
   retry = true,
 }: Props) {
   const [board, setBoard] = useState<number[][]>([]);
+  const [boardShow, setBoardShow] = useState<boolean[][]>([]);
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
 
-  const revealSquare = () => {
-    console.log("ok");
+  const revealSquare = (i: number, j: number) => {
+    let newBoardShow = [...boardShow];
+    newBoardShow[i][j] = true;
+    setBoardShow(newBoardShow);
   };
 
   const bombNeighbours = (i: number, j: number, randomBoard: number[][]) => {
@@ -44,12 +47,24 @@ export default function Board({
     return score;
   };
 
+  const hideTiles = () => {
+    let newBoardShow = [];
+    for (let i = 0; i < rows; i++) {
+      let boardShowRow = [];
+      for (let j = 0; j < rows; j++) {
+        boardShowRow.push(false);
+      }
+      newBoardShow.push(boardShowRow);
+    }
+    setBoardShow(newBoardShow);
+  };
+
   const generateBoard = () => {
-    const randomBoard = [];
-    const possibleBombs = [];
+    let randomBoard = [];
+    let possibleBombs = [];
 
     for (let i = 0; i < rows; i++) {
-      const boardRow = [];
+      let boardRow = [];
       for (let j = 0; j < columns; j++) {
         boardRow.push(0);
         possibleBombs.push(i * columns + j);
@@ -79,11 +94,13 @@ export default function Board({
       for (let j = 0; j < columns; j++)
         newTiles.push(
           <Square
-            size={squareSize}
             key={(i * columns + j).toString()}
+            size={squareSize}
             bombs={board[i][j]}
+            i={i}
+            j={j}
+            hidden={!boardShow[i][j]}
             clickSquare={revealSquare}
-            refresh={refresh != retry}
           />
         );
 
@@ -91,12 +108,17 @@ export default function Board({
   };
 
   useEffect(() => {
+    hideTiles();
     generateBoard();
   }, [refresh]);
 
   useEffect(() => {
+    hideTiles();
+  }, [retry]);
+
+  useEffect(() => {
     if (board.length > 0) generateTiles();
-  }, [board, retry]);
+  }, [board, boardShow]);
 
   return (
     <div

@@ -1,15 +1,22 @@
 import "./Square.css";
-import { useState, useEffect } from "react";
 
 interface Props {
   size: number;
   bombs: number;
-  clickSquare: () => void;
-  refresh?: boolean;
+  i: number;
+  j: number;
+  hidden: boolean;
+  clickSquare: (i: number, j: number) => void;
 }
 
-export default function Square({ size, bombs, clickSquare, refresh }: Props) {
-  const [hidden, setHidden] = useState(true);
+export default function Square({
+  size,
+  bombs,
+  i,
+  j,
+  hidden,
+  clickSquare,
+}: Props) {
   const isBomb = bombs == -1;
   const colors = [
     "#6366f1",
@@ -22,17 +29,12 @@ export default function Square({ size, bombs, clickSquare, refresh }: Props) {
     "#fb7185",
   ];
 
-  useEffect(() => {
-    setHidden(true);
-  }, [refresh]);
-
   return (
     <div
       className={"square" + (hidden ? "" : " revealed")}
       onClick={() => {
         if (hidden) {
-          setHidden(false);
-          clickSquare();
+          clickSquare(i, j);
         }
       }}
       style={{
