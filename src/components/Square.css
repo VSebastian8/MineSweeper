@@ -33,3 +33,7 @@
 .locked {
   background-color: #14b8a6 !important;
 }
+
+.over > .square {
+  pointer-events: none;
+}

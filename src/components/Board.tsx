@@ -1,5 +1,6 @@
 import Square from "./Square";
 import { useState, useEffect } from "react";
+import "./Board.css";
 
 interface Props {
   columns?: number;
@@ -21,6 +22,7 @@ export default function Board({
   const [board, setBoard] = useState<number[][]>([]);
   const [boardShow, setBoardShow] = useState<boolean[][]>([]);
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
+  const [gameOver, setGameOver] = useState(false);
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
     const neighbours = [
@@ -44,9 +46,12 @@ export default function Board({
   };
 
   const revealSquare = (i: number, j: number) => {
+    if (gameOver) {
+      return;
+    }
     let newBoardShow = [...boardShow];
     newBoardShow[i][j] = true;
-    if (board[i][j] == -1) console.log("Game Over");
+    if (board[i][j] == -1) setGameOver(true);
     if (board[i][j] == 0) expand(i, j, newBoardShow);
 
     setBoardShow(newBoardShow);
@@ -133,11 +138,13 @@ export default function Board({
   };
 
   useEffect(() => {
+    setGameOver(false);
     hideTiles();
     generateBoard();
   }, [refresh]);
 
   useEffect(() => {
+    setGameOver(false);
     hideTiles();
   }, [retry]);
 
@@ -154,6 +161,7 @@ export default function Board({
         gridTemplateColumns: `repeat(${columns}, ${squareSize}px)`,
         gridTemplateRows: `repeat(${rows},  ${squareSize}px)`,
       }}
+      className={gameOver ? "over" : ""}
     >
       {tiles}
     </div>
