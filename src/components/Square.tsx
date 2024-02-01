@@ -1,4 +1,5 @@
 import "./Square.css";
+import { useEffect, useState } from "react";
 
 interface Props {
   size: number;
@@ -7,6 +8,7 @@ interface Props {
   j: number;
   hidden: boolean;
   clickSquare: (i: number, j: number) => void;
+  lockRefresh: boolean;
 }
 
 export default function Square({
@@ -16,26 +18,36 @@ export default function Square({
   j,
   hidden,
   clickSquare,
+  lockRefresh,
 }: Props) {
   const isBomb = bombs == -1;
+  const [lock, setLock] = useState(false);
   const colors = [
-    "#6366f1",
-    "#38bdf8",
+    "#818cf8",
+    "#67e8f9",
     "#2dd4bf",
-    "#34d399",
+    "#4ade80",
     "#a3e635",
     "#facc15",
     "#f59e0b",
     "#fb7185",
   ];
 
+  useEffect(() => {
+    setLock(false);
+  }, [lockRefresh]);
+
   return (
     <div
-      className={"square" + (hidden ? "" : " revealed")}
+      className={"square" + (hidden ? (lock ? " locked" : "") : " revealed")}
       onClick={() => {
-        if (hidden) {
+        if (hidden && !lock) {
           clickSquare(i, j);
         }
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setLock(!lock);
       }}
       style={{
         width: size + "px",

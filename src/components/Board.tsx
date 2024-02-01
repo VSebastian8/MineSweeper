@@ -125,6 +125,7 @@ export default function Board({
             j={j}
             hidden={!boardShow[i][j]}
             clickSquare={revealSquare}
+            lockRefresh={refresh == retry}
           />
         );
 
