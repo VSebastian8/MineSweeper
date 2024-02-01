@@ -1,6 +1,9 @@
 import Square from "./Square";
 import { useState, useEffect } from "react";
 import "./Board.css";
+import click_reveal from "../assets/click_reveal.wav";
+import click_expand from "../assets/click_expand.wav";
+import click_bomb from "../assets/click_bomb.mp3";
 
 interface Props {
   columns?: number;
@@ -27,6 +30,10 @@ export default function Board({
   const [gameOver, setGameOver] = useState(false);
   const [revealed, setRevealed] = useState(0);
   const revealGoal = columns * rows - bombNumber;
+
+  const revealSound = new Audio(click_reveal);
+  const expandSound = new Audio(click_expand);
+  const bombSound = new Audio(click_bomb);
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
     const neighbours = [
@@ -58,12 +65,18 @@ export default function Board({
       newBoardShow[i][j] = true;
       setRevealed((rev) => rev + 1);
     }
-    if (board[i][j] == -1) {
-      setRevealed((rev) => rev - 1);
-      setGameOver(true);
-    }
-    if (board[i][j] == 0) {
-      expand(i, j, newBoardShow);
+    switch (board[i][j]) {
+      case -1:
+        bombSound.play();
+        setRevealed((rev) => rev - 1);
+        setGameOver(true);
+        break;
+      case 0:
+        expandSound.play();
+        expand(i, j, newBoardShow);
+        break;
+      default:
+        revealSound.play();
     }
     setBoardShow(newBoardShow);
   };
