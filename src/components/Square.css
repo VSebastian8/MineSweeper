@@ -39,3 +39,23 @@
 .won > .square {
   pointer-events: none;
 }
+
+.exploded {
+  background-color: #fb7185;
+  border: #9f1239 solid 3px !important;
+}
+
+.won > .square {
+  position: relative;
+  animation: wave 1s cubic-bezier(0, 1.5, 1, 1.5);
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    top: 0;
+  }
+  50% {
+    top: -8px;
+  }
+}

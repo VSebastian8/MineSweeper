@@ -1,5 +1,5 @@
 import Square from "./Square";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Board.css";
 import click_reveal from "../assets/reveal.mp3";
 import click_expand from "../assets/expand.mp3";
@@ -34,7 +34,13 @@ export default function Board({
   const [tiles, setTiles] = useState<JSX.Element[]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [revealed, setRevealed] = useState(0);
+  const [showTimers, setShowTimers] = useState<ReturnType<typeof setTimeout>[]>(
+    []
+  );
+
   const revealGoal = columns * rows - bombNumber;
+  const gameRef = useRef(gameOver);
+  gameRef.current = gameOver;
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
     const neighbours = [
@@ -58,6 +64,33 @@ export default function Board({
     }
   };
 
+  const showColumnBombs = (j: number) => {
+    if (gameRef.current) {
+      let newBoardShow = [...boardShow];
+      for (let i = 0; i < rows; i++)
+        if (board[i][j] == -1) newBoardShow[i][j] = true;
+      setBoardShow(newBoardShow);
+    }
+  };
+
+  const showBombs = () => {
+    let newTimers = [];
+    for (let j = 0; j < columns; j++) {
+      newTimers.push(
+        setTimeout(() => {
+          showColumnBombs(j);
+        }, 100 * j)
+      );
+    }
+    setShowTimers(newTimers);
+  };
+
+  const stopTimers = () => {
+    for (let timer of showTimers) {
+      clearTimeout(timer);
+    }
+  };
+
   const revealSquare = (i: number, j: number) => {
     if (gameOver) return;
 
@@ -71,6 +104,7 @@ export default function Board({
         bombSound.play();
         setRevealed((rev) => rev - 1);
         setGameOver(true);
+        showBombs();
         break;
       case 0:
         expandSound.play();
@@ -163,6 +197,7 @@ export default function Board({
   };
 
   useEffect(() => {
+    stopTimers();
     setGameOver(false);
     setRevealed(0);
     hideTiles();
@@ -170,6 +205,7 @@ export default function Board({
   }, [refresh]);
 
   useEffect(() => {
+    stopTimers();
     setGameOver(false);
     setRevealed(0);
     hideTiles();

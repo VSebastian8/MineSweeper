@@ -27,6 +27,7 @@ export default function Square({
 }: Props) {
   const isBomb = bombs == -1;
   const [lock, setLock] = useState(false);
+  const [triggered, setTriggered] = useState(false);
   const colors = [
     "#818cf8",
     "#67e8f9",
@@ -40,6 +41,7 @@ export default function Square({
 
   useEffect(() => {
     setLock(false);
+    setTriggered(false);
   }, [lockRefresh]);
 
   const handleLock = () => {
@@ -50,8 +52,13 @@ export default function Square({
 
   return (
     <div
-      className={"square" + (hidden ? (lock ? " locked" : "") : " revealed")}
+      className={
+        "square" +
+        (lock ? " locked" : hidden ? "" : " revealed") +
+        (triggered ? " exploded" : "")
+      }
       onClick={() => {
+        if (isBomb) setTriggered(true);
         if (hidden && !lock) {
           clickSquare(i, j);
         }
@@ -63,9 +70,10 @@ export default function Square({
       style={{
         width: size + "px",
         color: isBomb ? "#9f1239" : colors[(bombs + 7) % 8],
+        animationDelay: j * 0.05 + "s",
       }}
     >
-      {hidden || bombs == 0 ? "" : bombs}
+      {hidden || bombs == 0 ? "" : isBomb ? (triggered ? "x" : "o") : bombs}
     </div>
   );
 }

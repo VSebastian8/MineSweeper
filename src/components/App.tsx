@@ -24,9 +24,9 @@ function App() {
   const [refreshed, setRefreshed] = useState(false);
   const [retried, setRetried] = useState(false);
   const [revealed, setRevealed] = useState(0);
-  const bombs = 25;
+  const bombs = 20;
   const rows = 8;
-  const columns = 14;
+  const columns = 12;
 
   const handleRefresh = () => {
     setRefreshed(!refreshed);
