@@ -14,6 +14,7 @@ interface Props {
   refresh?: boolean;
   retry?: boolean;
   update: (r: number) => void;
+  finish: (b: boolean) => void;
 }
 const revealSound = new Audio(click_reveal);
 const expandSound = new Audio(click_expand);
@@ -28,6 +29,7 @@ export default function Board({
   refresh = true,
   retry = true,
   update,
+  finish,
 }: Props) {
   const [board, setBoard] = useState<number[][]>([]);
   const [boardShow, setBoardShow] = useState<boolean[][]>([]);
@@ -39,7 +41,7 @@ export default function Board({
   );
 
   const revealGoal = columns * rows - bombNumber;
-  const gameRef = useRef(gameOver);
+  const gameRef = useRef(false);
   gameRef.current = gameOver;
 
   const expand = (i: number, j: number, newBoardShow: boolean[][]) => {
@@ -104,6 +106,7 @@ export default function Board({
         bombSound.play();
         setRevealed((rev) => rev - 1);
         setGameOver(true);
+        finish(false);
         showBombs();
         break;
       case 0:
@@ -217,7 +220,10 @@ export default function Board({
 
   useEffect(() => {
     update(revealed);
-    if (revealed == revealGoal) winSound.play();
+    if (revealed == revealGoal) {
+      winSound.play();
+      finish(true);
+    }
   }, [revealed]);
 
   return (
